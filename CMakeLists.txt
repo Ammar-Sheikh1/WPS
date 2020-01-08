@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.13.4)
+project(wps)
+add_subdirectory(third_party/leveldb)
+add_executable(dbscript db_script.cc)
+target_link_libraries(dbscript PUBLIC leveldb)

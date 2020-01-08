@@ -1,4 +1,6 @@
-
-
-**/resources
+#raw data and static libraries and cmake build files
+**/third_party
 **/kismet
+**/CMakeFiles
+Makefile
+
