@@ -90,24 +90,23 @@ int main() {
         leveldb::Status status = db->Get(readOpts, bssid, &location);
 
         if (status.ok()) {
-          //std::cout << "Found! " << bssid + "\t" << location << "\n";
           std::size_t idx = 0;
           double latitude = std::stod(location, &idx);
           double longitude = std::stod(location.substr(++idx));
-          //std::cout << latitude << "---" << longitude << "\n";
           latAvg += latitude;
           lonAvg += longitude;
           ++noOfAPs;
         }
-        //else 
-          //std::cout << "Not in DB " << bssid << "\n";
       } 
+
+      // Request NM to continue making scans
       deviceProxy->callMethod(requestScanMethod);
+
       std::cout << "Estimated location: \nLatitude: " << latAvg/noOfAPs << \
       "\nLongitude: " << lonAvg/noOfAPs << "\n";
-      std::cout << "NoOfAps: " << noOfAPs << "\n";
-      std::this_thread::sleep_for(std::chrono::milliseconds(15000));
+      std::cout << "NoOfAps: " << noOfAPs << "\n\n\n";
 
+      std::this_thread::sleep_for(std::chrono::milliseconds(15000));
     }
 
 
