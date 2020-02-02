@@ -1,4 +1,8 @@
-/*Script used to dump data into levelDB database*/
+/* 
+
+Script used to dump data into levelDB database 
+
+*/
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
@@ -7,11 +11,9 @@
 #include <vector>
 #include <cassert>
 
-
 #include "includes/XMLParser.h"
 #include "leveldb/db.h"
 
-using myMap = std::unordered_map<std::string, std::pair<double, double>>;
 
 int main(int argc, char** argv){
 
@@ -25,35 +27,30 @@ int main(int argc, char** argv){
   xml.build();
 
   // Parse the .netxml document for Networks, BSSID & latitude and longitude
-  std::cout << "Done building tree\n";
 
-
-
-  myMap map;
+  std::unordered_map<std::string, std::string> map;
 
   for (const auto& network : xml.iterate("detection-run/wireless-network")) {
 
     std::string BSSID = "";
-    double latitude = 0;
-    double longitude = 0;
+    std::string latitude = "";
+    std::string longitude = "";
 
     for (const auto& bssid: xml.iterate("wireless-network/BSSID", network)) {
       BSSID = bssid->text;
     }
     for (const auto& lat : xml.iterate("wireless-network/gps-info/avg-lat", network)) {
-      latitude = std::stod(lat->text);
+      latitude = lat->text;
     }
 
     for (const auto& lon : xml.iterate("wireless-network/gps-info/avg-lon", network)) {
-      longitude = std::stod(lon->text);
+      longitude = lon->text;
     }
-    if (BSSID.size() > 0 && latitude && longitude) {
-     map[BSSID] = std::pair<double,double>(latitude, longitude);
+    if (BSSID.size() &&  latitude.size() && longitude.size()) {
+     map[BSSID] = latitude + "/" + longitude;
     }
-    
   } 
   
-
   // Open Database
   leveldb::DB* db;
   leveldb::Options options;
@@ -64,18 +61,12 @@ int main(int argc, char** argv){
 
   //Dump Access Point Data in DB
   int i = 1;
-  for (auto iter = map.begin(), end = map.end(); iter != end; iter++) {
-    std::cout << i << ": " << iter->first << "\n";
-    std::cout << iter->second.first << "/" << iter->second.second << "\n";
-    db->Put(writeopts, iter->first, std::to_string(iter->second.first) \
-                                    + "/" + std::to_string(iter->second.second));
-    ++i;
+  for (auto iter = map.begin(), end = map.end(); iter != end; iter++, ++i) {
+    db->Put(writeopts, iter->first, iter->second);
   }
 
-  std::cout << "APs added " << i << "\n";
   // close db
   delete db;
-
-  std::cout << "Done! \n";
+  std::cout << i << " APs added \n";
   return 0;
 }
