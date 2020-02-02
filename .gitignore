@@ -3,6 +3,8 @@
 **/Kismet
 **/CMakeFiles
 **/lib
+**/db
+**/build
 dbscript
 Makefile
 
