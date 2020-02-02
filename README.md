@@ -10,8 +10,8 @@ Note: I have not uploaded any APData produced while wardriving.
 + db_script - Parses netxml file and places info in DB
 
 ## Tools & Libraries used
-+ Kismet - Used for "Wardriving", captured beacon frames and recorded gps info
-+ leveldb - Key-Value DB, used to mapped Access Point BSSID to lat/long
++ Kismet - Used for wardriving, captured beacon frames and recorded GPS info
++ leveldb - key-value DB, mapped Access Point BSSID to lat/long
 + sdbus-cpp - C++ binding for sdbus/dbus which allows for IPC with NetworkManager Daemon
 
 ## Todo
